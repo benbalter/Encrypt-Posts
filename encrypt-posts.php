@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Encrypt Posts
-Plugin URI: 
-Description: 
+Plugin URI: https://github.com/benbalter/Encrypt-Posts
+Description: WordPress Plugin that provides data-at-rest encryption of post content
 Version: 0.1
 Author: Benjamin J. Balter
 Author URI: http://ben.balter.com/
