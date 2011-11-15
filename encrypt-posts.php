@@ -98,6 +98,10 @@ class Encrypt_Posts {
 
 		global $post;
 	
+		//new post
+		if ( !$post )
+			return $content;
+			
 		//verify user wants encryption, otherwise remove flag
 		if ( !isset( $_POST['ep_toggle'] ) || !$_POST['ep_toggle'] ) {
 			delete_post_meta( $post->ID, '_encrypt_post' );
