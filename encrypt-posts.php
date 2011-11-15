@@ -20,8 +20,8 @@ class Encrypt_Posts {
 		//load cryptography class and init			
 		$this->init_cryptography();
 		
-		add_filter( 'content_save_pre', array( &$this, 'pre_save_filter' ), 10, 1 );
-		add_filter( 'content_edit_pre', array( &$this, 'pre_content_edit_filter' ), 10, 1 );
+		add_filter( 'content_save_pre', array( &$this, 'pre_save_filter' ), 100, 1 );
+		add_filter( 'content_edit_pre', array( &$this, 'pre_content_edit_filter' ), 1, 1 );
 		add_action( 'add_meta_boxes', array( &$this, 'add_meta_box' ) );
 		add_action( 'admin_head', array( &$this, 'enqueue_js' ) );
 		add_action( 'admin_footer', array( &$this, 'password_prompt' ) );
@@ -246,7 +246,7 @@ class Encrypt_Posts {
 				return $decrypted;			
 		
 		}
-		
+g		
 		//pass did not work, pretend it never happened
 		unset( $_POST['ep_password'] );
 		
