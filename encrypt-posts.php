@@ -25,7 +25,7 @@ class Encrypt_Posts {
 		add_action( 'add_meta_boxes', array( &$this, 'add_meta_box' ) );
 		add_action( 'admin_head', array( &$this, 'enqueue_js' ) );
 		add_action( 'admin_footer', array( &$this, 'password_prompt' ) );
-		add_filter( 'the_content', array( &$this, 'content_filter' ) );
+		add_filter( 'the_content', array( &$this, 'content_filter' ), 1 );
 	}
 	
 	/**
@@ -235,30 +235,29 @@ class Encrypt_Posts {
 	 * front-end content filter
 	 */
 	function content_filter( $content ) {
+		global $post;
 		
 		if ( !$this->encrypted_post( $post->ID ) )
 			return $content;
 			
-		if ( !isset( $_POST['ep_password'] ) ) {
-			
-			$content = '
-			<form method="post" id="ep_password_form">
-				<p>
-					<label for="ep_password">Password</label>: 
-					<input type="password" name="ep_password" />
-				</p>
-				<p><a class="button-primary" id="ep_password_submit" href="#">Decrypt</a></p>
-			</form>';
-			
-			return $content;
+		if ( isset( $_POST['ep_password'] ) ) {
+		
+			if ( $decrypted = $this->decrypt( $post->post_content, $_POST['ep_password'] ) ) 			
+				return $decrypted;			
 		
 		}
 		
-		if ( $decrypted = $this->decrypt( $content, $_POST['ep_password'] ) );
-			return $decrypted;
-		
 		//pass did not work, pretend it never happened
 		unset( $_POST['ep_password'] );
+		
+		$content = '
+		<form method="post" id="ep_password_form">
+		    <p>
+		    	<label for="ep_password">Password</label>: 
+		    	<input type="password" name="ep_password" />
+		    </p>
+		    <p><input type="submit" id="ep_password_submit" value="Decrypt" /></p>
+		</form>';
 		
 		return $content;
 
