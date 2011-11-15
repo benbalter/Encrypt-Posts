@@ -36,14 +36,14 @@ class Encrypt_Posts {
 		$crypt_path = dirname( __file__ ) . '/' . 'class.cryptastic.php';
 
 		if ( !file_exists( $crypt_path ) )
-			die( 'Can\'t load Cryptasic class. Tried ' . $crypt_path );
+			wp_die( sprintf( __( "'Can't load Cryptasic class. Tried %s", 'encrypt_posts' ), $crypt_path ) );
 			
 		require_once( $crypt_path );
 		
 		$this->crypt = new Cryptastic();
 		
 		if ( !defined( 'SECURE_AUTH_SALT' ) )
-			die( 'Need salts added to wp-config' );
+			wp_die( __( 'Need salts added to wp-config.php', 'encrypt_posts' ) );
 			
 		$this->salt = SECURE_AUTH_SALT;	
 	}
@@ -106,7 +106,7 @@ class Encrypt_Posts {
 		
 		//make sure we have a password
 		if ( $_POST['ep_toggle'] && empty( $_POST['ep_password'] ) )
-			die( 'Cannot encrypt without password' );
+			wp_die( __( 'Cannot encrypt without password', 'encrypt_posts' ) );
 		
 		//this filter is actually fired twice… only encrypt once per save
 		if ( in_array( $post->ID, $this->encrypts ) )
@@ -115,7 +115,7 @@ class Encrypt_Posts {
 		$content = $this->encrypt( $content, $_POST['ep_password'] );
 
 		if ( !$content )
-			die( 'Encryption error' );
+			wp_die( __( 'Encryption error', 'encrypt_posts' ) );
 			
 		//set flags
 		add_post_meta( $post->ID, '_encrypt_post', true, true );
@@ -130,7 +130,7 @@ class Encrypt_Posts {
 	function add_meta_box( ) {
 	
 		foreach ( array( 'post', 'page')  as $post_type )
-			add_meta_box( 'encrypt_posts', 'Encryption', array( &$this, 'metabox' ), $post_type, 'side', 'high' );	
+			add_meta_box( 'encrypt_posts', __( 'Encryption', 'encrypt_posts' ), array( &$this, 'metabox' ), $post_type, 'side', 'high' );	
 	
 	}
 	
@@ -154,7 +154,7 @@ class Encrypt_Posts {
 	function metabox( $post ) {
 	?>
 	<p>
-		<label for="ep_toggle">Encrypt?</label> <input type="checkbox" name="ep_toggle" id="ep_toggle" <?php checked( $this->encrypted_post( $post->ID ), true ); ?>/> 
+		<label for="ep_toggle"><?php _e( 'Encrypt?', 'encrypt_posts'); ?></label> <input type="checkbox" name="ep_toggle" id="ep_toggle" <?php checked( $this->encrypted_post( $post->ID ), true ); ?>/> 
 		<div id="ep_password_div">
 			<label for="ep_password"><?php _e( 'Password', 'encrypt_posts' ); ?></label>: 
 			<input type="password" name="ep_password" id="ep_password" />
@@ -200,9 +200,9 @@ class Encrypt_Posts {
 			return $content;
 		
 		if ( !isset( $_POST['ep_password'] ) ) 
-			return $content; //do something here to prompt for pw
+			return $content;
 			
-		if ( $decrypted = $this->decrypt( $content, $_POST['ep_password'] ) );
+		if ( $decrypted = $this->decrypt( $content, $_POST['ep_password'] ) )
 			return $decrypted;
 		
 		//pass did not work, pretend it never happened
@@ -252,11 +252,12 @@ class Encrypt_Posts {
 		
 		$content = '
 		<form method="post" id="ep_password_form">
+			<p>'. __( 'This post is encrypted. Please enter the password:', 'encrypt_password' ) . '</p>
 		    <p>
-		    	<label for="ep_password">Password</label>: 
+		    	<label for="ep_password">' . __( 'Password', 'encrypt_posts' ) . '</label>: 
 		    	<input type="password" name="ep_password" />
 		    </p>
-		    <p><input type="submit" id="ep_password_submit" value="Decrypt" /></p>
+		    <p><input type="submit" id="ep_password_submit" value="' . __( 'Decrypt', 'encrypt_posts' ) . '" /></p>
 		</form>';
 		
 		return $content;
