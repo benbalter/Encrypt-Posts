@@ -28,6 +28,13 @@ jQuery( document ).ready( function( $ ){
 		}
 	});
 	
+	if ( !$('#ep_toggle').is(':checked') )
+		$('#ep_password_div').hide();
+	
+	$('#ep_toggle').change( function(){
+		$('#ep_password_div').toggle('slow');
+	});
+	
 	//disable autosave to prevent storing unencrypted
 	autosave = function() {};
 

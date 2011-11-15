@@ -128,8 +128,10 @@ class Encrypt_Posts {
 	 * Register metaboxes
 	 */
 	function add_meta_box( ) {
-		add_meta_box( 'encrypt_posts', 'Encryption', array( &$this, 'metabox' ), 'post' );	
-		add_meta_box( 'encrypt_posts', 'Encryption', array( &$this, 'metabox' ), 'page' ); 	
+	
+		foreach ( array( 'post', 'page')  as $post_type )
+			add_meta_box( 'encrypt_posts', 'Encryption', array( &$this, 'metabox' ), $post_type, 'side', 'high' );	
+	
 	}
 	
 	/**
@@ -153,8 +155,10 @@ class Encrypt_Posts {
 	?>
 	<p>
 		<label for="ep_toggle">Encrypt?</label> <input type="checkbox" name="ep_toggle" id="ep_toggle" <?php checked( $this->encrypted_post( $post->ID ), true ); ?>/> 
-		<label for="ep_password"><?php _e( 'Password', 'encrypt_posts' ); ?></label>: 
-		<input type="password" name="ep_password" id="ep_password" />
+		<div id="ep_password_div">
+			<label for="ep_password"><?php _e( 'Password', 'encrypt_posts' ); ?></label>: 
+			<input type="password" name="ep_password" id="ep_password" />
+		</div>
 	</p>
 	<?php 
 	}
