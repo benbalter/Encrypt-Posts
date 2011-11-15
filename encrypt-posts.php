@@ -246,7 +246,7 @@ class Encrypt_Posts {
 				return $decrypted;			
 		
 		}
-g		
+		
 		//pass did not work, pretend it never happened
 		unset( $_POST['ep_password'] );
 		
