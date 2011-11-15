@@ -67,9 +67,11 @@ class Encrypt_Posts {
 
 		global $post;
 	
-		if ( !isset( $_POST['ep_toggle'] ) || !$_POST['ep_toggle'] )
+		if ( !isset( $_POST['ep_toggle'] ) || !$_POST['ep_toggle'] ) {
+			delete_post_meta( $post->ID, '_encrypt_post' );
 			return $content;
-			
+		}
+					
 		if ( $_POST['ep_toggle'] && empty( $_POST['ep_password'] ) )
 			die( 'Cannot encrypt without password' );
 		
@@ -105,15 +107,19 @@ class Encrypt_Posts {
 	function metabox( $post ) {
 	?>
 	<p>
-		<label for="ep_toggle">Encrypt?</label> <input type="checkbox" name="ep_toggle" <?php checked( $this->encrypted_post( $post->ID ), true ); ?>/> 
+		<label for="ep_toggle">Encrypt?</label> <input type="checkbox" name="ep_toggle" id="ep_toggle" <?php checked( $this->encrypted_post( $post->ID ), true ); ?>/> 
 		<label for="ep_password"><?php _e( 'Password', 'encrypt_posts' ); ?></label>: 
-		<input type="password" name="ep_password" />
+		<input type="password" name="ep_password" id="ep_password" />
 	</p>
 	<?php 
 	}
 	
 	function password_prompt() { 
 		global $pagenow;
+		global $post;
+		
+		//get the post from the DB so we have the unencrypted content
+		$original_post = get_post( $post->ID );
 		if ( $pagenow != 'post.php' )
 			return;
 	?>
@@ -126,10 +132,14 @@ class Encrypt_Posts {
 			</p>
 			<p><a class="button-primary" id="ep_password_submit" href="#">Decrypt</a></p>
 		</form>
-	</div><?php
+	</div>
+	<input id="original_post_title" type="hidden" value="<?php echo esc_attr( $original_post->post_title ); ?>" ?>
+	<input id="original_post_content" type="hidden" value="<?php echo esc_attr( $original_post->post_content ); ?>" ?>
+	<?php
 	}
 	
 	function pre_content_edit_filter( $content ) {
+	
 		global $post;
 		if ( !$this->encrypted_post( $post->ID ) )
 			return $content;
@@ -137,9 +147,11 @@ class Encrypt_Posts {
 		if ( !isset( $_POST['ep_password'] ) ) 
 			return $content; //do something here to prompt for pw
 			
-		$content = $this->decrypt( $content, $_POST['ep_password'] );
+		if ( $decrypted = $this->decrypt( $content, $_POST['ep_password'] ) );
+			return $decrypted;
 		
-		//do something here if auth failed
+		//pass did not work, pretend it never happened
+		unset( $_POST['ep_password'] );
 		
 		return $content;
 		
@@ -155,6 +167,7 @@ class Encrypt_Posts {
 		$data = array( 
 			'encrypted_post' => $this->encrypted_post(),
 			'prompt' => $prompt,
+			'noPassWarning' => __( 'If you would like to encrypt the post, you must enter a password', 'encrypt_posts' ),
 		);
 		
 		wp_localize_script( 'encrypt_posts', 'encrypt_posts', $data ); 
@@ -180,9 +193,11 @@ class Encrypt_Posts {
 		
 		}
 		
-		$content = $this->decrypt( $content, $_POST['ep_password'] );
-
-		//do something here if auth failed
+		if ( $decrypted = $this->decrypt( $content, $_POST['ep_password'] ) );
+			return $decrypted;
+		
+		//pass did not work, pretend it never happened
+		unset( $_POST['ep_password'] );
 		
 		return $content;
 

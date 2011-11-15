@@ -8,5 +8,24 @@ jQuery( document ).ready( function( $ ){
 		$("form#ep_password_form").submit();
 		return false;
 	});
+	
+	$("#publish").click( function( e ) {
+	
+		if ( $('#ep_toggle').is(':checked') && $('#ep_password').val() == '' ) {
+		
+			e.preventDefault();
+			e.stopPropagation();
+			
+			alert( encrypt_posts.noPassWarning );
+			
+			$('#ajax-loading').hide();
+			setTimeout( "jQuery('#publish').removeClass('button-primary-disabled')", 1);
+
+			return false;
+		}
+	});
+	
+	//disable autosave to prevent storing unencrypted
+	autosave = function() {};
 
 });
