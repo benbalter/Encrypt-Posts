@@ -193,8 +193,6 @@ class Encrypt_Posts {
 			</div>
 		</form>
 	</div>
-	<input id="original_post_title" type="hidden" value="<?php echo esc_attr( $original_post->post_title ); ?>" ?>
-	<input id="original_post_content" type="hidden" value="<?php echo esc_attr( $original_post->post_content ); ?>" ?>
 	<?php
 	}
 	
