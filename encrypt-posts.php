@@ -146,6 +146,9 @@ class Encrypt_Posts {
 	function encrypted_post( $postID = null) {
 		global $post;
 		
+		if ( !$post )
+			return false;
+		
 		if ( $postID == null )
 			$postID = $post->ID;
 		
@@ -180,13 +183,14 @@ class Encrypt_Posts {
 			return;
 	?>
 	<div id="ep_password_prompt" style="display:none;">
-		<p><?php _e( 'This post is encrypted. Please enter the password:', 'encrypt_password' ); ?></p>
+		<div style="margin-top: 200px; width: 325px; margin-left: auto; margin-right: auto;"><p><strong><?php _e( 'This post is encrypted. Please enter the password:', 'encrypt_password' ); ?></strong></p>
 		<form method="post" id="ep_password_form">
 			<p>
-				<label for="ep_password"><?php _e( 'Password', 'encrypt_posts' ); ?></label>: 
-				<input type="password" name="ep_password" />
+				<label for="ep_password" class="screen-reader-text"><?php _e( 'Password', 'encrypt_posts' ); ?>:</label>
+				<input type="password" name="ep_password" class="regular-text" />
 			</p>
-			<p><a class="button-primary" id="ep_password_submit" href="#">Decrypt</a></p>
+			<p><a class="button-primary" style="color:white;" id="ep_password_submit" href="#">Decrypt</a></p>
+			</div>
 		</form>
 	</div>
 	<input id="original_post_title" type="hidden" value="<?php echo esc_attr( $original_post->post_title ); ?>" ?>
