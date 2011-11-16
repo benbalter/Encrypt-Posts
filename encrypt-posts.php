@@ -262,7 +262,7 @@ class Encrypt_Posts {
 		<form method="post" id="ep_password_form">
 			<p>'. __( 'This post is encrypted. Please enter the password:', 'encrypt_password' ) . '</p>
 		    <p>
-		    	<label for="ep_password">' . __( 'Password', 'encrypt_posts' ) . '</label>: 
+		    	<label for="ep_password" class="screen-reader-text" style="visibility:hidden;">' . __( 'Password', 'encrypt_posts' ) . ':</label> 
 		    	<input type="password" name="ep_password" />
 		    </p>
 		    <p><input type="submit" id="ep_password_submit" value="' . __( 'Decrypt', 'encrypt_posts' ) . '" /></p>
