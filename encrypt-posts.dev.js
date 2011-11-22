@@ -1,7 +1,7 @@
 jQuery( document ).ready( function( $ ){
 	
 	//decrypt prompt
-	if ( pagenow == 'post' && encrypt_posts.prompt == 1 ) {
+	if ( ( pagenow == 'post' || pagenow == 'page' ) && encrypt_posts.prompt == 1 ) {
 		tb_show( 'Password', '?TB_inline=true&inlineId=ep_password_prompt&modal=true' );
 	}
 	
